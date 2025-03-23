@@ -4,7 +4,7 @@ import logging
 from mcp.server.fastmcp import FastMCP
 
 # Logging setup — outputs to stdio
-logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
+logging.basicConfig(level=logging.ERROR, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 # Initialize FastMCP server
