@@ -6,9 +6,10 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("football")
 
 # Constants
-FOOTBALL_API_BASE = "https://api.sportsworldcentral.com/"
+FOOTBALL_API_BASE = "https://api.sportsworldcentral.com"
 
-async def make_fotball_request(url: str) -> dict[str, Any] | None:
+async def make_football_request(url: str) -> dict[str, Any] | None:
+
     """Make a request to the SportsWorldCentral API with proper error handling."""
     async with httpx.AsyncClient() as client:
         try:
@@ -18,31 +19,24 @@ async def make_fotball_request(url: str) -> dict[str, Any] | None:
         except Exception:
             return None
 
-def format_count(feature: dict) -> str:
-    """Format an alert feature into a readable string."""
-    props = feature["properties"]
+def format_count(data: dict) -> str:
     return f"""
-League_Count: {props.get('league_count', 'Unknown')}
-Team_Count: {props.get('team_count', 'Unknown')}
-Player_Count: {props.get('player_count', 'Unknown')}
+League_Count: {data.get('league_count', 'Unknown')}
+Team_Count: {data.get('team_count', 'Unknown')}
+Player_Count: {data.get('player_count', 'Unknown')}
 """
 
+
 @mcp.tool()
-async def get_counts(state: str) -> str:
-    """Get counts from SportsWorldCentral
-
-    """
+async def get_counts() -> str:
+    """Get counts from SportsWorldCentral"""
     url = f"{FOOTBALL_API_BASE}/v0/counts"
-    data = await make_fotball_request(url)
+    data = await make_football_request(url)
 
-    if not data or "features" not in data:
+    if not data:
         return "Unable to fetch counts."
 
-    if not data["features"]:
-        return "No counts retrieved."
-
-    counts = [format_count(feature) for feature in data["features"]]
-    return "\n---\n".join(counts)
+    return format_count(data)
 
 
 if __name__ == "__main__":
